@@ -67,6 +67,7 @@ function addEdges() {
       boardArray[arrayIndex][0][1] - 1,
     ];
 
+    //if statement checks if coordinates are within the board area
     if (
       edgeOneCoordinates[0] >= 0 &&
       edgeOneCoordinates[0] <= 7 &&
@@ -149,16 +150,19 @@ addEdges();
 console.log(boardArray);
 
 function knightMoves(startCoordinates, endCoordinates) {
-  console.log('test');
-
   let startVertexIndex = findIndex(startCoordinates);
   let endVertexIndex = findIndex(endCoordinates);
 
   console.log(startVertexIndex);
   console.log(endVertexIndex);
 
+  //queue array for level order traversal
   const queueArray = [];
+  //adding first element into the queue
+  queueArray.push(startVertexIndex);
+  console.log(queueArray);
 
+  //adds selected vertex adjecent elemnts
   function addToQueue(vertex) {
     if (boardArray[vertex][1] !== undefined) {
       queueArray.push(boardArray[vertex][1]);
@@ -186,26 +190,57 @@ function knightMoves(startCoordinates, endCoordinates) {
     }
   }
 
-  addToQueue(startVertexIndex);
-  console.log(queueArray);
+  let currentVertexIndex = startVertexIndex;
+  console.log(currentVertexIndex);
 
-  function levelOrderIterative() {
-    //If startNode does not exist
-    /* if () {
-      return;
-    } */
+  //for tracing the path from endVertex to startVertex
+  let deletedVertices = [];
 
-    while (queueArray.length > 0) {
-      let currentVertex = queueArray[0];
-      console.log(currentVertex);
-      if (currentNode.left !== null) {
-        queueArray.push(currentNode.left);
+  //traverses the graph in level order until the endVertex
+  while (currentVertexIndex !== endVertexIndex) {
+    console.log('running');
+    console.log('Current Vertex: ' + currentVertexIndex);
+    addToQueue(currentVertexIndex);
+    deletedVertices.push(queueArray.shift());
+    currentVertexIndex = queueArray[0];
+    console.log(queueArray);
+  }
+  console.log(deletedVertices);
+
+  console.log('Find Path');
+  let deletedVerticesReversed = deletedVertices.reverse();
+  console.log(deletedVerticesReversed);
+
+  //traverses from endVertex back to startVertex to show exact path
+  function findPath() {
+    console.log(currentVertexIndex);
+
+    //iterates through deleted vertexes starting from last deleted vertex,
+    //looks for edge to the endVertex
+    for (let i = 0; i < deletedVerticesReversed.length; i++) {
+      console.log('first loop ' + deletedVerticesReversed[i]);
+
+      console.log(boardArray[deletedVerticesReversed[i]].length);
+
+      //iterates through all edges of deleted vertex
+      for (let j = 0; j < boardArray[deletedVerticesReversed[i]].length; j++) {
+        console.log('running');
+
+        console.log(boardArray[deletedVerticesReversed[i]][j]);
+
+        //if connection to endVertex found, sets previousVertex
+        if (boardArray[deletedVerticesReversed[i]][j] === currentVertexIndex) {
+          let previousVertex = 'previous step: ' + deletedVerticesReversed[i];
+          console.log(previousVertex);
+
+          //now set currentvertex to previousvertex and continue down the deleted array
+          //have to remove already traversed deletedarray vertexes
+          //note: maximum 6 steps for knight to get to furthest location
+        }
       }
-      if (currentNode.right !== null) {
-        queueArray.push(currentNode.right);
-      }
-      queueArray.shift();
     }
   }
+  findPath();
 }
-knightMoves([0, 0], [2, 1]);
+knightMoves([0, 0], [3, 3]);
+//0 10 27
