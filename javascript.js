@@ -1,3 +1,6 @@
+console.log('Synthax: knightMoves([0, 0], [6, 6]);');
+
+//Creates an array of graph vertices
 function createBoardArray() {
   const boardArray = [];
 
@@ -12,9 +15,20 @@ function createBoardArray() {
 }
 const boardArray = createBoardArray();
 
+//Finds the array index of a vertex based on the coordinates
 function findIndex(coordinatesArray) {
-  //might remove if statement later
   if (coordinatesArray === undefined) {
+    return;
+  }
+
+  //Logs an error if coordinates are not on the board
+  if (
+    coordinatesArray[0] < 0 ||
+    coordinatesArray[0] > 7 ||
+    coordinatesArray[1] < 0 ||
+    coordinatesArray[1] > 7
+  ) {
+    console.error('Please select valid coordinates');
     return;
   }
 
@@ -25,8 +39,9 @@ function findIndex(coordinatesArray) {
   }
 }
 
+//Adds adjecent vertices to each vortex
 function addEdges() {
-  function addEdgesToVortices(arrayIndex) {
+  function addEdgesToVertices(arrayIndex) {
     let edgeOneCoordinates = [
       boardArray[arrayIndex][0][0] - 2,
       boardArray[arrayIndex][0][1] + 1,
@@ -67,7 +82,7 @@ function addEdges() {
       boardArray[arrayIndex][0][1] - 1,
     ];
 
-    //if statement checks if coordinates are within the board area
+    //Checks if coordinates are within the board area
     if (
       edgeOneCoordinates[0] >= 0 &&
       edgeOneCoordinates[0] <= 7 &&
@@ -142,105 +157,131 @@ function addEdges() {
   }
 
   for (let i = 0; i < boardArray.length; i++) {
-    addEdgesToVortices(i);
+    addEdgesToVertices(i);
   }
 }
 addEdges();
 
-console.log(boardArray);
-
+//Logs the shortest way to get from one square to another
+//by outputting all squares the knight will stop on along the way.
 function knightMoves(startCoordinates, endCoordinates) {
   let startVertexIndex = findIndex(startCoordinates);
   let endVertexIndex = findIndex(endCoordinates);
 
-  console.log(startVertexIndex);
-  console.log(endVertexIndex);
+  //Stops the function if findIndex can not find coordinates on theboard
+  if (startVertexIndex === undefined || endVertexIndex === undefined) {
+    return;
+  }
 
-  //queue array for level order traversal
+  //Queue array for level order traversal
   const queueArray = [];
-  //adding first element into the queue
+  //Adds first element into the queue
   queueArray.push(startVertexIndex);
-  console.log(queueArray);
 
-  //adds selected vertex adjecent elemnts
+  //Adds an array of the selected vertex adjecent elements and their path to queue
   function addToQueue(vertex) {
     if (boardArray[vertex][1] !== undefined) {
-      queueArray.push(boardArray[vertex][1]);
+      let vertexAndPathArray = [];
+      //Adds adjecent vertex
+      vertexAndPathArray.push(boardArray[vertex][1]);
+      //Adds adjecent vertex path i.e. the current vertex with its path
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][2] !== undefined) {
-      queueArray.push(boardArray[vertex][2]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][2]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][3] !== undefined) {
-      queueArray.push(boardArray[vertex][3]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][3]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][4] !== undefined) {
-      queueArray.push(boardArray[vertex][4]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][4]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][5] !== undefined) {
-      queueArray.push(boardArray[vertex][5]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][5]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][6] !== undefined) {
-      queueArray.push(boardArray[vertex][6]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][6]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][7] !== undefined) {
-      queueArray.push(boardArray[vertex][7]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][7]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
     if (boardArray[vertex][8] !== undefined) {
-      queueArray.push(boardArray[vertex][8]);
+      let vertexAndPathArray = [];
+      vertexAndPathArray.push(boardArray[vertex][8]);
+      vertexAndPathArray.push(currentVertexIndexAndPath);
+      queueArray.push(vertexAndPathArray);
     }
   }
 
-  let currentVertexIndex = startVertexIndex;
-  console.log(currentVertexIndex);
+  //Creates array of the startVertexIndex and its path (which I designated as itself).
+  //Array needed for the while loop.
+  let currentVertexIndexAndPath = [];
+  currentVertexIndexAndPath.push(startVertexIndex);
+  currentVertexIndexAndPath.push(startVertexIndex); //path is same as Vertex at start
 
-  //for tracing the path from endVertex to startVertex
-  let deletedVertices = [];
-
-  //traverses the graph in level order until the endVertex
-  while (currentVertexIndex !== endVertexIndex) {
-    console.log('running');
-    console.log('Current Vertex: ' + currentVertexIndex);
-    addToQueue(currentVertexIndex);
-    deletedVertices.push(queueArray.shift());
-    currentVertexIndex = queueArray[0];
-    console.log(queueArray);
+  //Traverses the graph in level order until the endVertex
+  while (currentVertexIndexAndPath[0] !== endVertexIndex) {
+    addToQueue(currentVertexIndexAndPath[0]);
+    queueArray.shift();
+    currentVertexIndexAndPath = queueArray[0];
   }
-  console.log(deletedVertices);
 
-  console.log('Find Path');
-  let deletedVerticesReversed = deletedVertices.reverse();
-  console.log(deletedVerticesReversed);
+  //Console.logs number of moves and path in the required format
+  function logAnswer(path) {
+    let numberOfMoves = 0;
 
-  //traverses from endVertex back to startVertex to show exact path
-  function findPath() {
-    console.log(currentVertexIndex);
-
-    //iterates through deleted vertexes starting from last deleted vertex,
-    //looks for edge to the endVertex
-    for (let i = 0; i < deletedVerticesReversed.length; i++) {
-      console.log('first loop ' + deletedVerticesReversed[i]);
-
-      console.log(boardArray[deletedVerticesReversed[i]].length);
-
-      //iterates through all edges of deleted vertex
-      for (let j = 0; j < boardArray[deletedVerticesReversed[i]].length; j++) {
-        console.log('running');
-
-        console.log(boardArray[deletedVerticesReversed[i]][j]);
-
-        //if connection to endVertex found, sets previousVertex
-        if (boardArray[deletedVerticesReversed[i]][j] === currentVertexIndex) {
-          let previousVertex = 'previous step: ' + deletedVerticesReversed[i];
-          console.log(previousVertex);
-
-          //now set currentvertex to previousvertex and continue down the deleted array
-          //have to remove already traversed deletedarray vertexes
-          //note: maximum 6 steps for knight to get to furthest location
-        }
+    //Counts number of moves recursively
+    function countMoves(currentVertex) {
+      if (currentVertex[0] === currentVertex[1]) {
+        return;
       }
+
+      numberOfMoves++;
+      countMoves(currentVertex[1]);
+    }
+    countMoves(path);
+
+    console.log(`You made it in ${numberOfMoves} moves! Here is your path:`);
+
+    let arrayOfReversedPath = [];
+
+    function createPathArray(currentVertex) {
+      if (currentVertex[0] === currentVertex[1]) {
+        return;
+      }
+
+      //boardArray [first number of path array] [first number of that]
+      arrayOfReversedPath.push(boardArray[currentVertex[0]][0]);
+
+      createPathArray(currentVertex[1]);
+    }
+    createPathArray(path);
+
+    arrayOfReversedPath.push(startCoordinates);
+
+    for (let i = arrayOfReversedPath.length - 1; i >= 0; i--) {
+      console.log(arrayOfReversedPath[i]);
     }
   }
-  findPath();
+  logAnswer(currentVertexIndexAndPath);
 }
-knightMoves([0, 0], [3, 3]);
-//0 10 27
+knightMoves([0, 0], [6, 6]);
