@@ -1,4 +1,4 @@
-console.log('Synthax: knightMoves([0, 0], [6, 6]);');
+console.log('Syntax: knightMoves([0, 0], [6, 6]);');
 
 //Creates an array of graph vertices
 function createBoardArray() {
